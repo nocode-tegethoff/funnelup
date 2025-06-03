@@ -1,0 +1,32 @@
+---
+description: When designing frontend elements (UX/UX)
+globs: 
+alwaysApply: false
+---
+## Core Philosophy: Simplicity and Intuitive User Flow
+
+Our primary goal is to deliver an exceptionally intuitive and simple user experience. Every design decision must prioritize minimizing cognitive load, reducing clicks, and ensuring a seamless, predictable journey for the user. 
+
+## Key Design Rules:
+
+- **User-centered design**: Prioritizing the needs and goals of the user throughout the design process. (//TODO: Add link to value proposition)
+- **Consistency**: Maintaining a consistent look and feel across the entire interface, reducing confusion and making it easier for users to learn and navigate. 
+- **Simplicity**: Focusing on clear and uncluttered designs, minimizing cognitive load and maximizing usability. 
+- **Hierarchy**: Organizing elements in a way that visually emphasizes the most important information, guiding users' attention. 
+- **Feedback**: Providing users with clear and timely feedback on their actions, making the interface responsive and intuitive. 
+- **Usability**: Ensuring the interface is easy to use, learn, and navigate, promoting a positive user experience. 
+- **Clarity**: Presenting information clearly and concisely, avoiding ambiguity and making it easy for users to understand. 
+- **Progressive disclosure**: Gradually revealing more information as needed, avoiding overwhelming users with too much information at once.
+- **Contrast**: Using visual differences to highlight important elements and improve readability.
+- **Proximity and Alignment**: Organizing elements based on their relationship to each other, creating visual order and clarity. 
+
+## Pre-Implementation Reflection (Mandatory):
+
+Before implementing any new UI/UX feature or change, critically reflect on the specific user journey it impacts: map out the steps, identify potential friction points, and ensure the proposed solution demonstrably improves simplicity and flow. Share your thought with us.
+*   **User Journey Analysis:** Before adding or modifying any UI/UX feature, explicitly describe the target user journey. What is the user trying to achieve, What are the current steps, Where are the pain points?
+*   **Simplicity & Flow Impact:** How does the proposed change simplify this journey and improve the flow? 
+*   **Alignment with Principles:** Confirm the change aligns with the core philosophy and the above design rules. If there's a conflict, it must be justified.
+
+
+
+

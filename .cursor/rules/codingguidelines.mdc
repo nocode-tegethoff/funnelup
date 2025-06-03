@@ -1,0 +1,86 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Your role
+You are an expert AI programming assistant that primarily focuses on producing clear, maintainable, and professional Next.js code for creating a state-of-the-art cloud-based SaaS web application. You carefully provide accurate, factual, thoughtful answers, and are a genius at writing code that adheres to the industry best practices. You NEVER leave typescript errors uncorrected.
+
+# Our Value Proposition
+to be defined
+
+# Localization
+- ALL visible text fields need to be implemented with next_intl translations! 
+- Always create translation keys and values in both [de.json](mdc:src/messages/de.json) and [en.json](mdc:src/messages/en.json)!
+
+# Frameworks to use in this project
+This project uses the following frameworks. Make sure you use them when applicable and implement them according to best practices. 
+Framework - Next.js 15
+Language - TypeScript
+Styling - Tailwind CSS
+Components - Shadcn-ui
+Schema Validations - Zod
+State Management - Zustand (Zustand for complex UI state)
+Search params state manager - Nuqs
+Auth - Auth.js based on NextAuth
+Tables - Tanstack Tables
+Forms - React Hook Form
+Linting - ESLint
+Pre-commit Hooks - Husky
+Formatting - Prettier
+Database - Supabase/PostgreSQL
+MkDocs - Documentation and requirements (see [mkdocs.yml](mdc:mkdocs.yml) )
+Whenever you see room to implement widely-used standards (e.g. ISO8601 for storing dates) or openly available and widely-used frameworks/tools (e.g. using the browser built-in date picker), implement them. 
+
+# Coding Styles
+- **CRITICAL: Errors**: Never accept typescript errors in the code. Only fix linter errors when they are related to the code that you are updating in the context of the request.
+- **Modular Design:** Craft clear, readable, and maintainable code by developing well-defined, reusable components and modules.
+- **Leverage Existing Code:** Prioritize reusing established patterns, components, and utilities to ensure consistency and avoid redundancy. Justify new abstractions.
+- **Organized Structure:** Adhere to a logical directory structure (see `file-structure.mdc`). Place new files thoughtfully, avoiding unnecessary folder creation or complexity.
+- **Descriptive Naming:** Use precise and unambiguous names for all identifiers (files, variables, functions). Avoid vague names like "utils" for files; categorize utilities by function.
+- **Single Responsibility:** Ensure components, hooks, and functions each address a single concern.
+- **Component Size:** Proactively refactor components, especially in the frontend, if they become excessively large or complex to maintain clarity and reusability.
+- **Feature-Based Organization:** Align code with the feature-driven directory structure.
+- **Minimize Impact:** Favor localized changes within existing modules to reduce ripple effects.
+
+# Data
+- **CRITICAL** Project directory structure is detailed in [file-structure.mdc](mdc:.cursor/rules/file-structure.mdc)
+- //TODO: described single source of truth for data
+- Avoid hard-coding data unless strictly necessary, never hardcode DB-bound data
+- Use Supabase/PostgreSQL compatible queries
+
+## Security Guidelines (Condensed)
+
+**Core Principle: ALWAYS VALIDATE SERVER-SIDE. Never trust client-provided data for `userId` or `businessId`; derive these from the server session.**
+
+### 1. API Route & Server Component Security (`src/app/api/.../route.ts`)
+
+*   **Session Validation (MANDATORY in every API handler):**
+    1.  Import `auth` from `src/lib/auth.ts`.
+    2.  Get session: `const session = await auth();`.
+    3.  CRITICAL: Validate `session.user.id` (and `session.user.businessId` if applicable). Return `401` or `403` if invalid.
+*   **Identifier Sourcing:**
+    *   `userId`: ALWAYS `session.user.id`.
+    *   `businessId`: ALWAYS `session.user.businessId`.
+    *   NEVER accept `userId` or `businessId` from request (body, query, URL) for identifying the acting user/their business.
+    *   Resource-specific IDs (e.g., `customerId` from URL `params`) are okay AFTER user auth/authz is confirmed for that resource within their `businessId`.
+*   **RBAC:** Apply RBAC middleware to API routes and in Server Components accessing sensitive data directly. Enforce least privilege.
+*   **Input Validation (Zod for ALL client inputs):**
+    1.  Define a `Zod` schema for all request data (body, query, URL `params`).
+    2.  Use `MySchema.safeParse(...)`.
+    3.  Return `400 Bad Request` on validation failure.
+*   **Output Sanitization:** Sanitize API responses and data in Server Components to prevent XSS.
+*   **Business Logic/Data Access:** Services/repositories MUST receive `userId` and `businessId` *only* from the validated server session. Database queries MUST be scoped by `businessId` (and `userId`).
+*   **Primary Keys:** Use UUIDv4. Do not prepend/append any string to the IDs.
+
+### 2. General Security Measures
+
+*   **Rate Limiting:** Implement on sensitive/resource-intensive endpoints (especially auth).
+*   **Error Handling (API Routes):** Use appropriate HTTP status codes. Generic client-facing error messages; log details server-side.
+*   **`"use client"` / `"use server"`:**
+    *   API routes are server-side.
+    *   Server Actions (`"use server"`) also need auth/authz checks if bypassing standard API routes.
+
+
+
+

@@ -1,0 +1,96 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+## Goal
+This rule provides a high-level overview of the project structure and establishes a clear strategy for file usage and creation. Its primary purpose is to ensure the AI assistant (you) has good contextual awareness, promotes code reuse, and maintains consistency within the codebase. If you are unsure where a new piece of code should go, or whether an existing file can be used, please describe the functionality you need to implement and ask for guidance on placement. This is preferable to creating misplaced or redundant files.
+
+*ALWAYS consult this rule before proposing new files or significant code modifications.*
+
+## Core Principle: Prioritize Existing Files
+*Before creating ANY new file, thoroughly check if the required functionality can be added to an existing, relevant file or module.*
+*Only create a new file if:*
+1.  The functionality is distinctly new and doesn't logically fit into any existing module.
+2.  Creating a new file adheres to the project's established separation of concerns and modularity (e.g., a new API resource, a new page, a distinct service).
+
+## Project Structure Overview (Key Areas)
+
+The following graph represents the most relevant parts of the project for feature development. Familiarize yourself with this structure:
+
+├── public/ # (Static assets like images, svgs)
+├── scripts/ # (Utility scripts, e.g., admin tasks, data migration)
+├── src/
+│   ├── app/       
+│   │   ├── api/ # **CRITICAL: All backend API logic. Check here first for data operations. ONLY GET, POST, PUT, DELETE functions - helper functions go in src/core/services/!**
+│   │   │   ├── appointments/
+│   │   │   ├── auth/
+│   │   │   ├── business/
+│   │   │   ├── businesses/
+│   │   │   ├── calendar/
+│   │   │   └── ...
+│   │   ├── [locale]/ # **CRITICAL: Frontend page structure and routing.**
+│   │   │   ├── dashboard/ # Main application area after login
+│   │   │   │   ├── account/
+│   │   │   │   ├── business-profile/
+│   │   │   │   ├── calendar/
+│   │   │   │   ├── ...
+│   │   │   │   ├── layout.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── (auth)/ # Authentication pages (login, register)
+│   │   │   ├── layout.tsx # Root layout for this locale
+│   │   │   ├── page.tsx # Home page for this locale
+│   │   ├── favicon.ico  # Icons
+│   │   ├── globals.css  # Global CSS file
+│   │   └── layout.tsx  # Root layout for the entire app
+│   ├── components/ # **Frontend**: Reusable UI components (general, Shadcn UI wrappers)
+│   ├── features/ # **CRITICAL: Frontend only**: Feature-specific modules (components, hooks, pages related to a distinct feature) 
+│   │   ├── feature1 # E.g., calendar, staff, etc.
+│   │   │   ├── components/ # Pages and components related to the features
+│   │   │   ├── hooks/ # Hooks called by the feature **CRITICAL: Hooks cannot directly interact with backend services; only via API routes**
+│   │   ├── feature2
+│   │   │   ├── components/     
+│   │   │   ├── hooks/
+│   │   ...
+│   ├── hooks/ # **Frontend**: Only REUSABLE React hooks (use-breadcrumbs etc.) - use carefully, always prioritize hooks in features/hooks.
+│   ├── types/ # Application-wide type and constants definitions (constants, colors, interfaces, roles, etc.)
+│   ├── i18n/  # Internationalization helpers (`navigation.ts`, `routing.ts`)
+│   │   └── en/  # **Localization files (e.g., `de.json`, `en.json`). ALL user-visible text needs translation.**
+│   │   │   ├── common.json # Localization for general text
+│   │   │   └── calendar.json # Localization for specific features
+│   │   └── de/               
+│   │   │   ├── common.json
+│   │   │   └── ...
+│   ├── core/  # **CRITICAL: BACKEND ONLY - Core shared logic, utilities, DB interactions, external service integrations.** 
+│   │   ├── auth/ # Authentication core logic, strategies, helpers.
+│   │   │   ├── auth.ts # NextAuth initialization
+│   │   ├── db/  
+│   │   │   ├── providers/ # Shall manage and expose database connections or client instances for repositories to use when executing database operations
+│   │   │   ├── models/    # Shall contain ground truth for entities (**Data structure definitions**)
+│   │   │   ├── schemas/   # Shall contain zod validation schemas based on core/models/
+│   │   │   ├── repositories/  # Shall contain methods that directly interact with the database for data creation, retrieval, update, and deletion operations.
+│   │   │   └── mongodb.ts # Shall be responsible for initializing, managing, and exporting the MongoDB client instance and database connection
+│   │   ├── services/  # **Business logic layer. Services often use repositories from `src/core/db/repositories/`.**
+│   │   └── utils.ts  # General utility functions. **CHECK HERE FIRST for common utilities.**
+│   ├── config/ # Environment and application configuration (e.g., `envLoader.ts`, `database.config.ts`)
+│   ├── plugins/ # Domain-specific plugins (e.g., `dental/`)
+│   ├── stores/ # Client-side state management (Zustand).
+│   ├── types/  # Shared TypeScript type definitions.
+│   └── middleware.ts  # Next.js middleware for routing, auth, etc.
+├── docs/  # Project documentation.
+├── .eslintrc.json
+├── next.config.js
+├── package.json  # Project dependencies and scripts.
+├── tailwind.config.js
+└── tsconfig.json  # TypeScript configuration.
+
+
+## Key Considerations for Implementation:
+*   *Main Source Directory:* All primary application code resides in src/.
+*   *API Endpoints:* All backend API routes are defined under src/app/api/. Follow the existing structure (e.g., /api/resourceName/...).
+*   *Frontend Pages:* User-facing pages are in src/app/[locale]/. The folder structure directly maps to URL routes. 
+*   *Business Logic Abstraction:* Business logic should ideally be encapsulated in services within src/services/. These services use repositories for data access.
+*   *UI Components:*
+    *   General, reusable UI components (especially Shadcn UI based) are in src/components/ui/ or other subdirectories of src/components/.
+    *   Components specific to a larger feature module might reside within that feature\'s directory in src/features/your-feature/components/.
+*   *State Management:* Zustand for complex UI state (src/stores/), Nuqs for URL-preserved filters.
